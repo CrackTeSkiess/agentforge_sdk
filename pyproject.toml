@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=45,<70", "wheel>=0.40"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,16 +7,31 @@ name = "agentforge"
 version = "0.1.0"
 description = "AgentForge Python SDK - Build and deploy RL agents for competitive multiplayer games"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.9"
 authors = [
-    {name = "AgentForge Team", email = "support@agentforge.com"}
+    {name = "AgentForge Team", email = "support@agentforge.io"}
 ]
-keywords = ["reinforcement-learning", "rl", "games", "competition", "agents", "ai"]
+maintainers = [
+    {name = "AgentForge Team", email = "support@agentforge.io"}
+]
+keywords = [
+    "reinforcement-learning",
+    "rl",
+    "games",
+    "competition",
+    "agents",
+    "ai",
+    "chess",
+    "multiplayer",
+    "bot",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
+    
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -47,19 +62,24 @@ security = [
 ]
 
 [project.urls]
-Homepage = "https://agentforge.com"
-Documentation = "https://docs.agentforge.com"
-Repository = "https://github.com/agentforge/agentforge"
-Issues = "https://github.com/agentforge/agentforge/issues"
+Homepage = "https://agentforge.io"
+Documentation = "https://docs.agentforge.io"
+Repository = "https://github.com/agentforge/agentforge_sdk.git"
+Issues = "https://github.com/agentforge/agentforge_sdk/issues"
+Changelog = "https://github.com/agentforge/agentforge_sdk/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["agentforge*"]
-exclude = ["tests*", "*test*"]
+exclude = ["tests*", "*test*", "main.py"]
+
+[tool.setuptools.package-data]
+agentforge = ["py.typed"]
 
 [tool.ruff]
 target-version = "py39"
 line-length = 100
+src = ["agentforge"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "S"]
@@ -73,3 +93,10 @@ python_version = "3.9"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"

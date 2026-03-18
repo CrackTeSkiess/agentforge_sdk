@@ -1,0 +1,29 @@
+# Include README and LICENSE
+include README.md
+include LICENSE
+include SECURITY.md
+include .env.example
+
+# Include package configuration
+include pyproject.toml
+include setup.cfg
+
+# Include all Python source files
+recursive-include agentforge *.py
+
+# Include type hints marker
+recursive-include agentforge *.py.typed
+
+# Exclude test files and development files
+global-exclude *.py[cod]
+global-exclude __pycache__
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.pyd
+global-exclude .pytest_cache
+global-exclude .coverage
+global-exclude htmlcov
+global-exclude .env
+global-exclude .env.local
+global-exclude .gitignore
+global-exclude main.py
