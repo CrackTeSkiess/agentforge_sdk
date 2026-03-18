@@ -5,7 +5,7 @@ from __future__ import annotations
 import random
 from typing import Any
 
-from agentforge.agents.base import BaseAgent
+from aitabletop.agents.base import BaseAgent
 
 
 class RandomAgent(BaseAgent):
@@ -17,7 +17,7 @@ class RandomAgent(BaseAgent):
     Example:
         import os
         agent = RandomAgent(seed=42)  # Optional seed for reproducibility
-        client = RLArenaClient(api_key=os.environ.get("RL_ARENA_API_KEY"))
+        client = AITabletopClient(api_key=os.environ.get("AITABLETOP_API_KEY"))
         result = client.play_match(match_id, agent)
     """
 

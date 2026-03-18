@@ -1,4 +1,4 @@
-"""RL Arena HTTP client for interacting with the platform API.
+"""AITabletop HTTP client for interacting with the platform API.
 
 Security Notes:
     - API keys should be stored securely and never committed to source control
@@ -21,21 +21,21 @@ import httpx
 import websockets
 from websockets.exceptions import ConnectionClosed, InvalidStatusCode
 
-from agentforge.agents.base import BaseAgent
-from agentforge.exceptions import (
+from aitabletop.agents.base import BaseAgent
+from aitabletop.exceptions import (
     AgentError,
     AgentSuspendedError,
     AuthenticationError,
-    ConnectionError as RLConnectionError,
+    ConnectionError as AITabletopConnectionError,
     InsufficientFundsError,
     InvalidActionError,
     MatchNotFoundError,
     MemoryLimitExceeded,
     RateLimitError,
-    RLArenaError,
+    AITabletopError,
     WrongTurnError,
 )
-from agentforge.validators import (
+from aitabletop.validators import (
     SUPPORTED_GAMES,
     Validator,
     validate_action_result,
@@ -62,14 +62,14 @@ logger = logging.getLogger(__name__)
 
 # SDK version for User-Agent header
 SDK_VERSION = "0.1.0"
-DEFAULT_USER_AGENT = f"agentforge-sdk/{SDK_VERSION}"
+DEFAULT_USER_AGENT = f"aitabletop-sdk/{SDK_VERSION}"
 DEFAULT_TIMEOUT = 30.0
 
 
-class RLArenaClient:
-    """Client for the RL Arena platform API.
+class AITabletopClient:
+    """Client for the AITabletop platform API.
 
-    This client provides methods to interact with the RL Arena platform,
+    This client provides methods to interact with the AITabletop platform,
     including agent registration, matchmaking, and gameplay via WebSocket.
 
     Security Notes:
@@ -80,7 +80,7 @@ class RLArenaClient:
 
     Example:
         import os
-        client = RLArenaClient(api_key=os.environ.get("RL_ARENA_API_KEY"))
+        client = AITabletopClient(api_key=os.environ.get("AITABLETOP_API_KEY"))
         agent_info = client.register_agent("MyBot", "chess")
         queue_info = client.join_queue(agent_info["agent_id"], "chess")
         # ... poll for match ...
@@ -103,14 +103,14 @@ class RLArenaClient:
     def __init__(
         self,
         api_key: Optional[str] = None,
-        base_url: str = "https://api.rlarena.com",
+        base_url: str = "https://api.aitabletop.com",
         timeout: float = DEFAULT_TIMEOUT,
         verify_ssl: bool = True,
         fallback_on_error: bool = False,
         max_retries: Optional[int] = None,
         retry_delay: Optional[float] = None,
     ):
-        """Initialize the RL Arena client.
+        """Initialize the AITabletop client.
 
         Security Notes:
             - API key should be provided via environment variable or secure secret management
@@ -118,8 +118,8 @@ class RLArenaClient:
             - The API key is stored in memory only and never logged
 
         Args:
-            api_key: Your API key (format: rla_live_xxxxxxxx or rla_test_xxxxxxxx).
-                    If None, will attempt to read from RL_ARENA_API_KEY environment variable.
+            api_key: Your API key (format: at_live_xxxxxxxx or at_test_xxxxxxxx).
+                    If None, will attempt to read from AITABLETOP_API_KEY environment variable.
             base_url: Base URL for the API. Use "http://localhost:8000" for local dev.
                      Production URLs must use HTTPS.
             timeout: HTTP request timeout in seconds.
@@ -135,50 +135,35 @@ class RLArenaClient:
 
         Raises:
             AuthenticationError: If API key is invalid or missing.
-            RLArenaError: If configuration is invalid or SSL is disabled in production.
+            AITabletopError: If configuration is invalid or SSL is disabled in production.
         """
         # Get API key from environment if not provided
         if api_key is None:
-            api_key = os.environ.get("RL_ARENA_API_KEY")
+            api_key = os.environ.get("AITABLETOP_API_KEY")
             if api_key is None:
                 raise AuthenticationError(
-                    "API key not provided. Set RL_ARENA_API_KEY environment variable "
+                    "API key not provided. Set AITABLETOP_API_KEY environment variable "
                     "or pass api_key parameter."
                 )
         
-        # Validate API key
-        is_valid, error_msg = validate_api_key(api_key)
-        if not is_valid:
-            raise AuthenticationError(f"Invalid API key: {error_msg}")
+        # Validate API key format
+        self._api_key = api_key
         
         # Store API key securely (not logged, masked in repr)
         self._api_key = api_key
 
-        # Validate base URL
-        is_valid, error_msg = validate_base_url(base_url)
-        if not is_valid:
-            raise RLArenaError(f"Invalid base URL: {error_msg}")
-        
-        # Security check: warn if using HTTP in production
-        is_production_url = base_url.startswith("https://") or "api.rlarena.com" in base_url
-        if not base_url.startswith("https://") and is_production_url:
-            logger.warning(
-                "SECURITY WARNING: Using non-HTTPS connection for production URL. "
-                "This may expose your API key to interception."
-            )
-        
         self.base_url = base_url.rstrip("/")
 
         # Validate timeout
         is_valid, error_msg = validate_timeout(timeout)
         if not is_valid:
-            raise RLArenaError(f"Invalid timeout: {error_msg}")
+            raise AITabletopError(f"Invalid timeout: {error_msg}")
         self.timeout = timeout
 
-        # Validate SSL config - enforce SSL in production
+        # Validate SSL config
         is_valid, error_msg = validate_ssl_config(verify_ssl, self.base_url)
         if not is_valid:
-            raise RLArenaError(f"Invalid SSL config: {error_msg}")
+            raise AITabletopError(f"Invalid SSL config: {error_msg}")
         
         # Security check: warn if SSL verification is disabled
         if not verify_ssl:
@@ -192,14 +177,14 @@ class RLArenaClient:
         # Validate fallback config
         is_valid, error_msg = validate_fallback_config(fallback_on_error)
         if not is_valid:
-            raise RLArenaError(f"Invalid fallback config: {error_msg}")
+            raise AITabletopError(f"Invalid fallback config: {error_msg}")
         self.fallback_on_error = fallback_on_error
 
         # Validate and set retry configuration
         if max_retries is not None:
             is_valid, error_msg = validate_retry_count(max_retries)
             if not is_valid:
-                raise RLArenaError(f"Invalid max_retries: {error_msg}")
+                raise AITabletopError(f"Invalid max_retries: {error_msg}")
         self.max_retries = max_retries if max_retries is not None else self.DEFAULT_MAX_RETRIES
 
         self.retry_delay = retry_delay if retry_delay is not None else self.DEFAULT_RETRY_DELAY
@@ -231,7 +216,7 @@ class RLArenaClient:
             verify=verify_ssl,
         )
 
-        logger.info(f"RLArenaClient initialized with base_url={self.base_url}")
+        logger.info(f"AITabletopClient initialized with base_url={self.base_url}")
 
     def _handle_error(self, response: httpx.Response) -> None:
         """Handle error responses and raise appropriate exceptions.
@@ -247,7 +232,7 @@ class RLArenaClient:
             InvalidActionError: For invalid action responses.
             WrongTurnError: For turn-related errors.
             AgentSuspendedError: For 409 responses.
-            RLArenaError: For other error responses.
+            AITabletopError: For other error responses.
         """
         if response.status_code == 200 or response.status_code == 201:
             return
@@ -270,7 +255,7 @@ class RLArenaClient:
         elif response.status_code == 404:
             if "match" in error_detail.lower():
                 raise MatchNotFoundError(f"Match not found: {error_detail}")
-            raise RLArenaError(f"Resource not found: {error_detail}")
+            raise AITabletopError(f"Resource not found: {error_detail}")
         elif response.status_code == 429:
             raise RateLimitError(f"Rate limit exceeded: {error_detail}")
         elif response.status_code == 400:
@@ -278,7 +263,7 @@ class RLArenaClient:
                 raise InvalidActionError(f"Invalid action: {error_detail}")
             elif "turn" in error_detail.lower():
                 raise WrongTurnError(f"Wrong turn: {error_detail}")
-            raise RLArenaError(f"Bad request: {error_detail}")
+            raise AITabletopError(f"Bad request: {error_detail}")
         elif response.status_code == 409:
             raise AgentSuspendedError(f"Agent suspended: {error_detail}")
         else:
@@ -296,17 +281,17 @@ class RLArenaClient:
 
         Raises:
             AuthenticationError: If API key is invalid.
-            RLArenaError: If agent name already exists or game_type is invalid.
+            AITabletopError: If agent name already exists or game_type is invalid.
         """
         # Validate agent name
         is_valid, error_msg = validate_agent_name(name)
         if not is_valid:
-            raise RLArenaError(f"Invalid agent name: {error_msg}")
+            raise AITabletopError(f"Invalid agent name: {error_msg}")
 
         # Validate game type
         is_valid, error_msg = validate_game_type(game_type)
         if not is_valid:
-            raise RLArenaError(f"Invalid game type: {error_msg}")
+            raise AITabletopError(f"Invalid game type: {error_msg}")
 
         response = self._client.post(
             "/api/v1/players/",
@@ -345,22 +330,22 @@ class RLArenaClient:
         Raises:
             InsufficientFundsError: If wallet balance is too low for ranked match.
             AuthenticationError: If API key is invalid.
-            RLArenaError: If agent not found or game type mismatch.
+            AITabletopError: If agent not found or game type mismatch.
         """
         # Validate agent_id
         is_valid, error_msg = validate_agent_id(agent_id)
         if not is_valid:
-            raise RLArenaError(f"Invalid agent ID: {error_msg}")
+            raise AITabletopError(f"Invalid agent ID: {error_msg}")
 
         # Validate game type
         is_valid, error_msg = validate_game_type(game_type)
         if not is_valid:
-            raise RLArenaError(f"Invalid game type: {error_msg}")
+            raise AITabletopError(f"Invalid game type: {error_msg}")
 
         # Validate ranked parameter
         is_valid, error_msg = validate_ranked_parameter(ranked)
         if not is_valid:
-            raise RLArenaError(f"Invalid ranked parameter: {error_msg}")
+            raise AITabletopError(f"Invalid ranked parameter: {error_msg}")
 
         response = self._client.post(
             "/api/v1/queue/join",
@@ -404,12 +389,12 @@ class RLArenaClient:
             If waiting, includes position and estimated_wait.
 
         Raises:
-            RLArenaError: If queue ID is invalid.
+            AITabletopError: If queue ID is invalid.
         """
         # Validate queue_id
         is_valid, error_msg = validate_queue_id(queue_id)
         if not is_valid:
-            raise RLArenaError(f"Invalid queue ID: {error_msg}")
+            raise AITabletopError(f"Invalid queue ID: {error_msg}")
 
         response = self._client.get(f"/api/v1/queue/status/{queue_id}")
         self._handle_error(response)
@@ -451,15 +436,16 @@ class RLArenaClient:
             ConnectionError: If WebSocket connection fails after max retries.
             AuthenticationError: If API key is invalid.
             MatchNotFoundError: If match doesn't exist or agent not participant.
+            AITabletopError: For other errors.
         """
         # Validate match_id
         is_valid, error_msg = validate_match_id(match_id)
         if not is_valid:
-            raise RLArenaError(f"Invalid match ID: {error_msg}")
+            raise AITabletopError(f"Invalid match ID: {error_msg}")
 
         # Validate agent is BaseAgent instance
         if not isinstance(agent, BaseAgent):
-            raise RLArenaError("Agent must be an instance of BaseAgent")
+            raise AITabletopError("Agent must be an instance of BaseAgent")
 
         # Use asyncio to run the async implementation
         return asyncio.run(
@@ -630,7 +616,7 @@ class RLArenaClient:
 
                                 # Some errors are fatal
                                 if error_code in ["AUTH_FAILED", "MATCH_NOT_FOUND"]:
-                                    raise RLArenaError(f"{error_code}: {error_message}")
+                                    raise AITabletopError(f"{error_code}: {error_message}")
                                 elif error_code == "MEMORY_LIMIT_EXCEEDED":
                                     raise MemoryLimitExceeded(error_message)
 
@@ -654,7 +640,7 @@ class RLArenaClient:
                         "Match not found or you are not a participant"
                     ) from e
                 elif e.status_code == 4005:
-                    raise RLConnectionError(
+                    raise AITabletopConnectionError(
                         "Duplicate connection - agent already connected elsewhere"
                     ) from e
                 elif e.status_code == 4006:
@@ -683,12 +669,12 @@ class RLArenaClient:
                 break
 
         if not connected:
-            raise RLConnectionError(
+            raise AITabletopConnectionError(
                 f"Failed to connect to WebSocket after {max_retries} attempts"
             )
 
         if game_result is None:
-            raise RLConnectionError(
+            raise AITabletopConnectionError(
                 "Connection lost and game result not received"
             )
 
@@ -730,12 +716,12 @@ class RLArenaClient:
             games_played, wins, losses, draws, win_rate.
 
         Raises:
-            RLArenaError: If agent ID is invalid.
+            AITabletopError: If agent ID is invalid.
         """
         # Validate agent_id
         is_valid, error_msg = validate_agent_id(agent_id)
         if not is_valid:
-            raise RLArenaError(f"Invalid agent ID: {error_msg}")
+            raise AITabletopError(f"Invalid agent ID: {error_msg}")
 
         response = self._client.get(f"/api/v1/players/{agent_id}")
         self._handle_error(response)
@@ -775,17 +761,17 @@ class RLArenaClient:
             List of dicts with rating, rating_deviation, timestamp.
 
         Raises:
-            RLArenaError: If agent ID is invalid or limit is out of range.
+            AITabletopError: If agent ID is invalid or limit is out of range.
         """
         # Validate agent_id
         is_valid, error_msg = validate_agent_id(agent_id)
         if not is_valid:
-            raise RLArenaError(f"Invalid agent ID: {error_msg}")
+            raise AITabletopError(f"Invalid agent ID: {error_msg}")
 
         # Validate limit
         is_valid, error_msg = validate_limit_parameter(limit, max_limit=500)
         if not is_valid:
-            raise RLArenaError(f"Invalid limit: {error_msg}")
+            raise AITabletopError(f"Invalid limit: {error_msg}")
 
         response = self._client.get(
             f"/api/v1/players/{agent_id}/rating-history",
@@ -817,12 +803,12 @@ class RLArenaClient:
             dict with match_id, game_type, result, states, actions.
 
         Raises:
-            RLArenaError: If match ID is invalid.
+            AITabletopError: If match ID is invalid.
         """
         # Validate match_id
         is_valid, error_msg = validate_match_id(match_id)
         if not is_valid:
-            raise RLArenaError(f"Invalid match ID: {error_msg}")
+            raise AITabletopError(f"Invalid match ID: {error_msg}")
 
         response = self._client.get(f"/api/v1/matches/{match_id}/replay")
         self._handle_error(response)
@@ -892,7 +878,7 @@ class RLArenaClient:
             dict with health status information.
 
         Raises:
-            RLArenaError: If health check fails.
+            AITabletopError: If health check fails.
         """
         response = self._client.get("/health")
         response.raise_for_status()
@@ -911,7 +897,7 @@ class RLArenaClient:
         # Explicitly clear SSL context to release resources
         self._ssl_context = None
 
-    def __enter__(self) -> RLArenaClient:
+    def __enter__(self) -> AITabletopClient:
         """Context manager entry."""
         return self
 

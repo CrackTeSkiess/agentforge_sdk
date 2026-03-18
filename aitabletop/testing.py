@@ -1,6 +1,6 @@
-"""RL Arena Testing Suite.
+"""AITabletop Testing Suite.
 
-This module provides testing utilities for RL Arena agents:
+This module provides testing utilities for AITabletop agents:
 - Local game simulation
 - Agent performance testing
 - Match replay generation
@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional, Type
 
-from agentforge.agents.base import BaseAgent
+from aitabletop.agents.base import BaseAgent
 
 
 @dataclass
@@ -122,7 +122,7 @@ class GameSimulator:
 
 
 class AgentTester:
-    """Test suite for RL Arena agents."""
+    """Test suite for AITabletop agents."""
     
     def __init__(self, agent: BaseAgent, game_type: str = "chess"):
         self.agent = agent
@@ -166,7 +166,7 @@ class AgentTester:
         """Run a single test match."""
         # Use random agent as opponent if none provided
         if opponent is None:
-            from agentforge.agents.random_agent import RandomAgent
+            from aitabletop.agents.random_agent import RandomAgent
             opponent = RandomAgent()
         
         # Create game

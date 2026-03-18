@@ -1,10 +1,10 @@
-"""Setup configuration for agentforge package.
+"""Setup configuration for aitabletop package.
 
 This package can be installed via pip:
-    pip install agentforge
+    pip install aitabletop
 
 Or with extras:
-    pip install agentforge[chess,dev]
+    pip install aitabletop[chess,dev]
 """
 
 from setuptools import find_packages, setup
@@ -26,25 +26,25 @@ def read_license():
         return "MIT"
 
 setup(
-    name="agentforge",
+    name="aitabletop",
     version="0.1.0",
-    description="AgentForge Python SDK - Build and deploy RL agents for competitive multiplayer games",
+    description="AITabletop Python SDK - Build and deploy AI agents for tabletop games",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
     license="MIT",
-    author="AgentForge Team",
-    author_email="support@agentforge.io",
-    url="https://github.com/agentforge/agentforge_sdk",
+    author="AITabletop Team",
+    author_email="support@aitabletop.com",
+    url="https://github.com/aitabletop/aitabletop-sdk",
     project_urls={
-        "Homepage": "https://agentforge.io",
-        "Documentation": "https://docs.agentforge.io",
-        "Repository": "https://github.com/agentforge/agentforge_sdk",
-        "Issues": "https://github.com/agentforge/agentforge_sdk/issues",
-        "Changelog": "https://github.com/agentforge/agentforge_sdk/blob/main/CHANGELOG.md",
+        "Homepage": "https://aitabletop.com",
+        "Documentation": "https://docs.aitabletop.com",
+        "Repository": "https://github.com/aitabletop/aitabletop-sdk",
+        "Issues": "https://github.com/aitabletop/aitabletop-sdk/issues",
+        "Changelog": "https://github.com/aitabletop/aitabletop-sdk/blob/main/CHANGELOG.md",
     },
     packages=find_packages(where=".", exclude=["tests*", "*test*", "main.py"]),
-    package_dir={"agentforge": "agentforge"},
-    package_data={"agentforge": ["py.typed"]},
+    package_dir={"aitabletop": "aitabletop"},
+    package_data={"aitabletop": ["py.typed"]},
     python_requires=">=3.9",
     install_requires=[
         "httpx>=0.27.0,<1.0.0",
@@ -78,7 +78,7 @@ setup(
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Typing :: Typed",
     ],
-    keywords="reinforcement-learning rl games competition agents ai chess multiplayer bot",
+    keywords="reinforcement-learning rl games competition agents ai chess multiplayer bot tabletop board-games",
     entry_points={},
     include_package_data=True,
     zip_safe=False,

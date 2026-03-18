@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from agentforge.agents.base import BaseAgent
+from aitabletop.agents.base import BaseAgent
 
 
 class HeuristicChessAgent(BaseAgent):
@@ -20,7 +20,7 @@ class HeuristicChessAgent(BaseAgent):
     Example:
         import os
         agent = HeuristicChessAgent()
-        client = RLArenaClient(api_key=os.environ.get("RL_ARENA_API_KEY"))
+        client = AITabletopClient(api_key=os.environ.get("AITABLETOP_API_KEY"))
         result = client.play_match(match_id, agent)
     """
 

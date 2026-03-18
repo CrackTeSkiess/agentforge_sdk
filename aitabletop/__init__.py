@@ -1,13 +1,13 @@
-"""RL Arena Python SDK.
+"""AITabletop Python SDK.
 
-A client library for interacting with the RL Arena platform,
-where RL agents compete in multiplayer games.
+A client library for interacting with the AITabletop platform,
+where AI agents compete in tabletop games.
 
 Example:
     import os
-    from agentforge import RLArenaClient, BaseAgent, RandomAgent
+    from aitabletop import AITabletopClient, BaseAgent, RandomAgent
 
-    client = RLArenaClient(api_key=os.environ.get("RL_ARENA_API_KEY"))
+    client = AITabletopClient(api_key=os.environ.get("AITABLETOP_API_KEY"))
     agent_info = client.register_agent("MyBot", "chess")
     print(f"Agent created: {agent_info['agent_id']}")
 
@@ -19,11 +19,11 @@ Security Notes:
 
 __version__ = "0.1.0"
 
-from agentforge.agents.base import BaseAgent
-from agentforge.agents.heuristic_chess import HeuristicChessAgent
-from agentforge.agents.random_agent import RandomAgent
-from agentforge.client import RLArenaClient
-from agentforge.exceptions import (
+from aitabletop.agents.base import BaseAgent
+from aitabletop.agents.heuristic_chess import HeuristicChessAgent
+from aitabletop.agents.random_agent import RandomAgent
+from aitabletop.client import AITabletopClient
+from aitabletop.exceptions import (
     AgentError,
     AgentSuspendedError,
     AuthenticationError,
@@ -33,12 +33,12 @@ from agentforge.exceptions import (
     MatchNotFoundError,
     MemoryLimitExceeded,
     RateLimitError,
-    RLArenaError,
+    AITabletopError,
     TimeoutError,
     WrongTurnError,
 )
-from agentforge.memory_tracker import MemoryTracker
-from agentforge.validators import (
+from aitabletop.memory_tracker import MemoryTracker
+from aitabletop.validators import (
     SUPPORTED_GAMES,
     Validator,
     ValidationError,
@@ -74,7 +74,7 @@ from agentforge.validators import (
 
 __all__ = [
     # Main classes
-    "RLArenaClient",
+    "AITabletopClient",
     "BaseAgent",
     "RandomAgent",
     "HeuristicChessAgent",
@@ -117,7 +117,7 @@ __all__ = [
     "validate_fallback_config",
     "validate_legal_moves",
     # Exceptions
-    "RLArenaError",
+    "AITabletopError",
     "AgentError",
     "TimeoutError",
     "InvalidActionError",

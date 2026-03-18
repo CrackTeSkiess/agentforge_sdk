@@ -1,4 +1,4 @@
-"""Validators for RL Arena SDK input and response validation.
+"""Validators for AITabletop SDK input and response validation.
 
 This module provides comprehensive validation for all SDK inputs,
 API responses, and data integrity checks.
@@ -9,13 +9,13 @@ from __future__ import annotations
 import re
 from typing import Any, Optional, Tuple
 
-from agentforge.exceptions import InvalidActionError, RLArenaError
+from aitabletop.exceptions import InvalidActionError, AITabletopError
 
 # Supported game types
 SUPPORTED_GAMES = frozenset({"chess", "go", "uno", "poker", "tarot", "san_juan", "qwixx"})
 
-# API key format: rla_live_<base64url_chars> or rla_test_<base64url_chars>
-API_KEY_PATTERN = re.compile(r"^rla_(live|test)_[A-Za-z0-9_-]{16,}$")
+# API key format: at_live_<base64url_chars> or at_test_<base64url_chars>
+API_KEY_PATTERN = re.compile(r"^at_(live|test)_[A-Za-z0-9_-]{16,}$")
 
 # Agent name: alphanumeric, spaces, underscores, hyphens, 1-100 chars
 AGENT_NAME_PATTERN = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9 _-]{0,98}[a-zA-Z0-9]$|^[a-zA-Z0-9]$")
@@ -55,12 +55,12 @@ def validate_api_key(api_key: str) -> Tuple[bool, Optional[str]]:
     if not isinstance(api_key, str):
         return False, "API key must be a string"
 
-    if len(api_key) < 24:  # rla_live_ (9) + 16 chars minimum
+    if len(api_key) < 20:  # af_live_ (8) + 16 chars minimum
         return False, "API key is too short"
 
     if not API_KEY_PATTERN.match(api_key):
         return False, (
-            "Invalid API key format. Expected format: rla_live_xxxxxxxx or rla_test_xxxxxxxx "
+            "Invalid API key format. Expected format: at_live_xxxxxxxx or at_test_xxxxxxxx "
             "(at least 16 characters after prefix)"
         )
 
@@ -564,7 +564,7 @@ def validate_ssl_config(verify_ssl: bool, base_url: str = "") -> Tuple[bool, Opt
     # Check if this appears to be a production URL
     is_production = (
         base_url.startswith("https://") and 
-        ("rlarena.com" in base_url or "api.rlarena" in base_url)
+        ("aitabletop.com" in base_url or "api.aitabletop" in base_url)
     )
 
     if not verify_ssl and is_production:
@@ -637,7 +637,7 @@ def validate_legal_moves(observation: dict, action: dict) -> Tuple[bool, Optiona
     return True, None
 
 
-class ValidationError(RLArenaError):
+class ValidationError(AITabletopError):
     """Raised when validation fails."""
 
     pass

@@ -1,4 +1,4 @@
-"""Memory tracking utilities for RL Arena agents.
+"""Memory tracking utilities for AITabletop agents.
 
 Security Note:
     This module provides memory usage tracking. If memory tracking is unavailable,

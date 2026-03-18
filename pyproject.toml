@@ -3,18 +3,18 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "agentforge"
+name = "aitabletop"
 version = "0.1.0"
-description = "AgentForge Python SDK - Build and deploy RL agents for competitive multiplayer games"
+description = "AITabletop Python SDK - Build and deploy AI agents for tabletop games"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.11"
 authors = [
-    {name = "AgentForge Team", email = "support@agentforge.io"}
+    {name = "AITabletop Team", email = "support@aitabletop.com"}
 ]
 maintainers = [
-    {name = "AgentForge Team", email = "support@agentforge.io"}
+    {name = "AITabletop Team", email = "support@aitabletop.com"}
 ]
 keywords = [
     "reinforcement-learning",
@@ -26,6 +26,8 @@ keywords = [
     "chess",
     "multiplayer",
     "bot",
+    "tabletop",
+    "board-games",
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -61,31 +63,31 @@ security = [
 ]
 
 [project.urls]
-Homepage = "https://agentforge.io"
-Documentation = "https://docs.agentforge.io"
-Repository = "https://github.com/agentforge/agentforge_sdk.git"
-Issues = "https://github.com/agentforge/agentforge_sdk/issues"
-Changelog = "https://github.com/agentforge/agentforge_sdk/blob/main/CHANGELOG.md"
+Homepage = "https://aitabletop.com"
+Documentation = "https://docs.aitabletop.com"
+Repository = "https://github.com/aitabletop/aitabletop-sdk.git"
+Issues = "https://github.com/aitabletop/aitabletop-sdk/issues"
+Changelog = "https://github.com/aitabletop/aitabletop-sdk/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["agentforge*"]
+include = ["aitabletop*"]
 exclude = ["tests*", "*test*", "main.py"]
 
 [tool.setuptools.package-data]
-agentforge = ["py.typed"]
+aitabletop = ["py.typed"]
 
 [tool.ruff]
 target-version = "py311"
 line-length = 100
-src = ["agentforge"]
+src = ["aitabletop"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "S"]
 ignore = ["B008"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["agentforge"]
+known-first-party = ["aitabletop"]
 
 [tool.mypy]
 python_version = "3.11"

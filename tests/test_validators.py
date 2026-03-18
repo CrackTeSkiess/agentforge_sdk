@@ -1,6 +1,6 @@
-"""Tests for agentforge validators module."""
+"""Tests for AITabletop validators module."""
 import pytest
-from agentforge.validators import (
+from aitabletop.validators import (
     validate_api_key,
     validate_game_type,
     validate_agent_name,
@@ -12,6 +12,7 @@ from agentforge.validators import (
     validate_health_response,
     ValidationError,
     Validator,
+    AITabletopError,
 )
 
 
@@ -20,7 +21,7 @@ class TestValidateApiKey:
 
     def test_valid_api_key(self):
         """Test with a valid API key format."""
-        is_valid, error = validate_api_key("rla_live_1234567890abcdef")
+        is_valid, error = validate_api_key("at_live_1234567890abcdef")
         assert is_valid is True
         assert error is None
 
@@ -161,5 +162,7 @@ class TestValidator:
         """Test Validator raise_if_invalid method."""
         validator = Validator()
         validator.validate(False, "Test error")
-        with pytest.raises(ValidationError):
+        with pytest.raises(ValidationError) as exc_info:
             validator.raise_if_invalid()
+        # ValidationError should inherit from AITabletopError
+        assert isinstance(exc_info.value, AITabletopError)

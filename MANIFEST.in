@@ -9,10 +9,10 @@ include pyproject.toml
 include setup.cfg
 
 # Include all Python source files
-recursive-include agentforge *.py
+recursive-include aitabletop *.py
 
 # Include type hints marker
-recursive-include agentforge *.py.typed
+recursive-include aitabletop *.py.typed
 
 # Exclude test files and development files
 global-exclude *.py[cod]

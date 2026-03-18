@@ -1,14 +1,14 @@
-# AgentForge Python SDK
+# AITabletop Python SDK
 
-[![PyPI version](https://img.shields.io/pypi/v/agentforge.svg)](https://pypi.org/project/agentforge/)
-[![Python versions](https://img.shields.io/pypi/pyversions/agentforge.svg)](https://pypi.org/project/agentforge/)
+[![PyPI version](https://img.shields.io/pypi/v/aitabletop.svg)](https://pypi.org/project/aitabletop/)
+[![Python versions](https://img.shields.io/pypi/pyversions/aitabletop.svg)](https://pypi.org/project/aitabletop/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-A Python SDK for building and deploying reinforcement learning agents on the RL Arena platform. Build AI agents that compete in multiplayer games like Chess, Go, UNO, Poker, and more.
+A Python SDK for building and deploying AI agents for tabletop games on the AITabletop platform. Build AI agents that compete in multiplayer games like Chess, Go, UNO, Poker, and more.
 
 ## Features
 
-- **RLArenaClient**: Full-featured API client with HTTP and WebSocket support
+- **AITabletopClient**: Full-featured API client with HTTP and WebSocket support
 - **BaseAgent**: Abstract base class for implementing custom agents
 - **Built-in Agents**: Ready-to-use RandomAgent and HeuristicChessAgent
 - **Automatic Reconnection**: WebSocket reconnection with exponential backoff
@@ -19,35 +19,35 @@ A Python SDK for building and deploying reinforcement learning agents on the RL 
 ## Installation
 
 ```bash
-pip install agentforge
+pip install aitabletop
 ```
 
 For development with chess support:
 ```bash
-pip install agentforge[chess,dev]
+pip install aitabletop[chess,dev]
 ```
 
 ## Quick Start
 
 ### 1. Get Your API Key
 
-1. Visit [RL Arena](https://rlarena.com) to create an account
+1. Visit [AITabletop](https://aitabletop.com) to create an account
 2. Navigate to Settings > API Keys
-3. Create a new API key (use `rla_test_` prefix for testing)
+3. Create a new API key (use `at_test_` prefix for testing)
 4. Store it securely as an environment variable:
 
 ```bash
-export RL_ARENA_API_KEY="rla_live_your_api_key_here"
+export AITABLETOP_API_KEY="at_live_your_api_key_here"
 ```
 
 ### 2. Create Your First Agent
 
 ```python
 import os
-from agentforge import RLArenaClient, RandomAgent
+from aitabletop import AITabletopClient, RandomAgent
 
 # Initialize client (reads API key from environment)
-client = RLArenaClient()
+client = AITabletopClient()
 
 # Register an agent
 agent_info = client.register_agent("MyBot", "chess")
@@ -60,7 +60,7 @@ print(f"Queue ID: {queue_info['queue_id']}")
 # Wait for match
 import time
 while True:
-    status = client.get_queue_status(queue_info["queue_id"])
+    status = client.get_queue_status(queue_info['queue_id'])
     if status["status"] == "matched":
         match_id = status["match_id"]
         break
@@ -76,7 +76,7 @@ print(f"Result: {result['result']}, New Rating: {result.get('new_rating')}")
 
 ```python
 import os
-from agentforge import RLArenaClient, BaseAgent
+from aitabletop import AITabletopClient, BaseAgent
 
 class MyAgent(BaseAgent):
     """Custom agent that implements game logic."""
@@ -90,7 +90,7 @@ class MyAgent(BaseAgent):
         return {"move": None}
 
 # Use your custom agent
-client = RLArenaClient()
+client = AITabletopClient()
 agent_info = client.register_agent("MyCustomBot", "chess")
 queue_info = client.join_queue(agent_info["agent_id"], "chess")
 
@@ -106,30 +106,30 @@ result = client.play_match(match_id, agent)
 
 ```python
 import os
-os.environ["RL_ARENA_API_KEY"] = "rla_live_xxxxxxxx"
+os.environ["AITABLETOP_API_KEY"] = "at_live_xxxxxxxx"
 
-from agentforge import RLArenaClient
+from aitabletop import AITabletopClient
 
 # API key automatically read from environment
-client = RLArenaClient()
+client = AITabletopClient()
 ```
 
 ### Using Explicit API Key
 
 ```python
-from agentforge import RLArenaClient
+from aitabletop import AITabletopClient
 
-client = RLArenaClient(api_key="rla_live_xxxxxxxx")
+client = AITabletopClient(api_key="at_live_xxxxxxxx")
 ```
 
 ### Development Mode (Local Testing)
 
 ```python
-from agentforge import RLArenaClient
+from aitabletop import AITabletopClient
 
 # For local development with self-signed certificates
-client = RLArenaClient(
-    api_key="rla_test_xxxxxxxx",
+client = AITabletopClient(
+    api_key="at_test_xxxxxxxx",
     base_url="http://localhost:8000",
     verify_ssl=False  # Only for local development!
 )
@@ -137,14 +137,14 @@ client = RLArenaClient(
 
 ## API Reference
 
-### RLArenaClient
+### AITabletopClient
 
-Main client for interacting with the RL Arena platform.
+Main client for interacting with the AITabletop platform.
 
 ```python
-client = RLArenaClient(
-    api_key=None,           # Optional, reads from RL_ARENA_API_KEY env var
-    base_url="https://api.rlarena.com",
+client = AITabletopClient(
+    api_key=None,           # Optional, reads from AITABLETOP_API_KEY env var
+    base_url="https://api.aitabletop.com",
     timeout=30.0,
     verify_ssl=True,
     fallback_on_error=False,
@@ -158,7 +158,7 @@ client = RLArenaClient(
 Abstract base class for all agents.
 
 ```python
-from agentforge import BaseAgent
+from aitabletop import BaseAgent
 
 class MyAgent(BaseAgent):
     def act(self, observation, time_limit_ms):
@@ -178,7 +178,7 @@ class MyAgent(BaseAgent):
 ### Built-in Agents
 
 ```python
-from agentforge import RandomAgent, HeuristicChessAgent
+from aitabletop import RandomAgent, HeuristicChessAgent
 
 # Random agent - picks random legal moves
 random_agent = RandomAgent(seed=42)
@@ -212,7 +212,7 @@ For more details, see [SECURITY.md](SECURITY.md).
 
 ### AuthenticationError
 - Ensure your API key is valid and not expired
-- Check that `RL_ARENA_API_KEY` environment variable is set
+- Check that `AITABLETOP_API_KEY` environment variable is set
 
 ### ConnectionError
 - Verify your internet connection
@@ -233,6 +233,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Links
 
-- [Documentation](https://docs.agentforge.io)
-- [Issue Tracker](https://github.com/agentforge/agentforge_sdk/issues)
-- [Source Code](https://github.com/agentforge/agentforge_sdk)
+- [Documentation](https://docs.aitabletop.com)
+- [Issue Tracker](https://github.com/aitabletop/aitabletop-sdk/issues)
+- [Source Code](https://github.com/aitabletop/aitabletop-sdk)

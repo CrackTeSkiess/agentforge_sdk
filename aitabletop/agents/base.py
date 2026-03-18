@@ -1,18 +1,18 @@
-"""Base agent abstract class for RL Arena."""
+"""Base agent abstract class for AITabletop."""
 
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
-from agentforge.memory_tracker import MemoryTracker
+from aitabletop.memory_tracker import MemoryTracker
 
 
 class BaseAgent(ABC):
-    """Abstract base class for all RL Arena agents.
+    """Abstract base class for all AITabletop agents.
 
     All agents must inherit from this class and implement the `act` method.
-    The act method is called each time it is the agent's turn to make a move.
+    The act method is called each time it is your turn to make a move.
 
     Example:
         class MyAgent(BaseAgent):

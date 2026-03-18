@@ -9,11 +9,11 @@
 
 ## Reporting a Vulnerability
 
-We take the security of the AgentForge SDK seriously. If you believe you have found a security vulnerability, please report it to us as described below.
+We take the security of the AITabletop SDK seriously. If you believe you have found a security vulnerability, please report it to us as described below.
 
 **Please do NOT report security issues through public GitHub issues.**
 
-Instead, please report them via email to [security@agentforge.io](mailto:security@agentforge.io) with the following information:
+Instead, please report them via email to [security@aitabletop.com](mailto:security@aitabletop.com) with the following information:
 
 1. Description of the vulnerability
 2. Steps to reproduce the issue
@@ -31,17 +31,17 @@ The SDK requires an API key for authentication. Follow these best practices:
 1. **Never hardcode API keys in source code** - Use environment variables:
    ```python
    import os
-   from agentforge import RLArenaClient
+   from aitabletop import AITabletopClient
 
-   client = RLArenaClient(api_key=os.environ.get("RL_ARENA_API_KEY"))
+   client = AITabletopClient(api_key=os.environ.get("AITABLETOP_API_KEY"))
    ```
 
-2. **Use environment variables** - Set the `RL_ARENA_API_KEY` environment variable:
+2. **Use environment variables** - Set the `AITABLETOP_API_KEY` environment variable:
    ```bash
-   export RL_ARENA_API_KEY="rla_live_xxxxxxxx"
+   export AITABLETOP_API_KEY="at_live_xxxxxxxx"
    ```
 
-3. **Use separate keys for development and production** - Use `rla_test_` prefixed keys for testing
+3. **Use separate keys for development and production** - Use `at_test_` prefixed keys for testing
 
 4. **Rotate keys regularly** - Periodically regenerate API keys
 
@@ -51,11 +51,11 @@ The SDK enforces SSL/TLS by default:
 
 ```python
 # Production (default) - SSL verification enabled
-client = RLArenaClient(api_key="your_key")
+client = AITabletopClient(api_key="your_key")
 
 # Development only - SSL verification can be disabled for local testing
 # WARNING: Never use in production
-client = RLArenaClient(
+client = AITabletopClient(
     api_key="your_key",
     verify_ssl=False,  # Only for local development with self-signed certs
     base_url="http://localhost:8000"
@@ -67,7 +67,7 @@ client = RLArenaClient(
 The SDK includes memory tracking to prevent resource exhaustion:
 
 ```python
-from agentforge import MemoryTracker
+from aitabletop import MemoryTracker
 
 tracker = MemoryTracker()
 if tracker.is_tracking_available():
@@ -88,7 +88,7 @@ else:
 2. **Review agent code** - Ensure custom agents don't expose sensitive data
 3. **Limit agent permissions** - Use the minimum required permissions
 
-## Security Features in AgentForge
+## Security Features in AITabletop
 
 ### Input Validation
 All user inputs are validated before being sent to the API:
@@ -113,7 +113,7 @@ dependencies = [
 
 ## Security Audit Checklist
 
-When deploying the AgentForge SDK, verify:
+When deploying the AITabletop SDK, verify:
 
 - [ ] API keys are stored in environment variables, not source code
 - [ ] SSL verification is enabled (`verify_ssl=True`)
@@ -145,4 +145,4 @@ We would like to thank the following for their contributions to our security:
 
 ## Contact
 
-For security-related questions or concerns, contact us at [security@agentforge.io](mailto:security@agentforge.io).
+For security-related questions or concerns, contact us at [security@aitabletop.com](mailto:security@aitabletop.com).
