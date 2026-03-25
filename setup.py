@@ -1,10 +1,10 @@
-"""Setup configuration for aitabletop package.
+"""Setup configuration for aitabletop_sdk package.
 
 This package can be installed via pip:
-    pip install aitabletop
+    pip install aitabletop_sdk
 
 Or with extras:
-    pip install aitabletop[chess,dev]
+    pip install aitabletop_sdk[chess,dev]
 """
 
 from setuptools import find_packages, setup
@@ -26,7 +26,7 @@ def read_license():
         return "MIT"
 
 setup(
-    name="aitabletop",
+    name="aitabletop_sdk",
     version="0.1.0",
     description="AITabletop Python SDK - Build and deploy AI agents for tabletop games",
     long_description=read_readme(),
@@ -43,8 +43,8 @@ setup(
         "Changelog": "https://github.com/aitabletop/aitabletop-sdk/blob/main/CHANGELOG.md",
     },
     packages=find_packages(where=".", exclude=["tests*", "*test*", "main.py"]),
-    package_dir={"aitabletop": "aitabletop"},
-    package_data={"aitabletop": ["py.typed"]},
+    package_dir={"aitabletop_sdk": "aitabletop_sdk"},
+    package_data={"aitabletop_sdk": ["py.typed"]},
     python_requires=">=3.9",
     install_requires=[
         "httpx>=0.27.0,<1.0.0",

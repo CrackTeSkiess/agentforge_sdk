@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "aitabletop"
+name = "aitabletop_sdk"
 version = "0.1.0"
 description = "AITabletop Python SDK - Build and deploy AI agents for tabletop games"
 readme = "README.md"
@@ -71,23 +71,23 @@ Changelog = "https://github.com/aitabletop/aitabletop-sdk/blob/main/CHANGELOG.md
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["aitabletop*"]
+include = ["aitabletop_sdk*"]
 exclude = ["tests*", "*test*", "main.py"]
 
 [tool.setuptools.package-data]
-aitabletop = ["py.typed"]
+aitabletop_sdk = ["py.typed"]
 
 [tool.ruff]
 target-version = "py311"
 line-length = 100
-src = ["aitabletop"]
+src = ["aitabletop_sdk"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "S"]
 ignore = ["B008"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["aitabletop"]
+known-first-party = ["aitabletop_sdk"]
 
 [tool.mypy]
 python_version = "3.11"

@@ -5,7 +5,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
-from aitabletop.memory_tracker import MemoryTracker
+from aitabletop_sdk.memory_tracker import MemoryTracker
 
 
 class BaseAgent(ABC):

@@ -1,7 +1,7 @@
 # AITabletop Python SDK
 
-[![PyPI version](https://img.shields.io/pypi/v/aitabletop.svg)](https://pypi.org/project/aitabletop/)
-[![Python versions](https://img.shields.io/pypi/pyversions/aitabletop.svg)](https://pypi.org/project/aitabletop/)
+[![PyPI version](https://img.shields.io/pypi/v/aitabletop_sdk.svg)](https://pypi.org/project/aitabletop_sdk/)
+[![Python versions](https://img.shields.io/pypi/pyversions/aitabletop_sdk.svg)](https://pypi.org/project/aitabletop_sdk/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 A Python SDK for building and deploying AI agents for tabletop games on the AITabletop platform. Build AI agents that compete in multiplayer games like Chess, Go, UNO, Poker, and more.
@@ -19,12 +19,12 @@ A Python SDK for building and deploying AI agents for tabletop games on the AITa
 ## Installation
 
 ```bash
-pip install aitabletop
+pip install aitabletop_sdk
 ```
 
 For development with chess support:
 ```bash
-pip install aitabletop[chess,dev]
+pip install aitabletop_sdk[chess,dev]
 ```
 
 ## Quick Start
@@ -44,7 +44,7 @@ export AITABLETOP_API_KEY="at_live_your_api_key_here"
 
 ```python
 import os
-from aitabletop import AITabletopClient, RandomAgent
+from aitabletop_sdk import AITabletopClient, RandomAgent
 
 # Initialize client (reads API key from environment)
 client = AITabletopClient()
@@ -76,7 +76,7 @@ print(f"Result: {result['result']}, New Rating: {result.get('new_rating')}")
 
 ```python
 import os
-from aitabletop import AITabletopClient, BaseAgent
+from aitabletop_sdk import AITabletopClient, BaseAgent
 
 class MyAgent(BaseAgent):
     """Custom agent that implements game logic."""
@@ -108,7 +108,7 @@ result = client.play_match(match_id, agent)
 import os
 os.environ["AITABLETOP_API_KEY"] = "at_live_xxxxxxxx"
 
-from aitabletop import AITabletopClient
+from aitabletop_sdk import AITabletopClient
 
 # API key automatically read from environment
 client = AITabletopClient()
@@ -117,7 +117,7 @@ client = AITabletopClient()
 ### Using Explicit API Key
 
 ```python
-from aitabletop import AITabletopClient
+from aitabletop_sdk import AITabletopClient
 
 client = AITabletopClient(api_key="at_live_xxxxxxxx")
 ```
@@ -125,7 +125,7 @@ client = AITabletopClient(api_key="at_live_xxxxxxxx")
 ### Development Mode (Local Testing)
 
 ```python
-from aitabletop import AITabletopClient
+from aitabletop_sdk import AITabletopClient
 
 # For local development with self-signed certificates
 client = AITabletopClient(
@@ -158,7 +158,7 @@ client = AITabletopClient(
 Abstract base class for all agents.
 
 ```python
-from aitabletop import BaseAgent
+from aitabletop_sdk import BaseAgent
 
 class MyAgent(BaseAgent):
     def act(self, observation, time_limit_ms):
@@ -178,7 +178,7 @@ class MyAgent(BaseAgent):
 ### Built-in Agents
 
 ```python
-from aitabletop import RandomAgent, HeuristicChessAgent
+from aitabletop_sdk import RandomAgent, HeuristicChessAgent
 
 # Random agent - picks random legal moves
 random_agent = RandomAgent(seed=42)

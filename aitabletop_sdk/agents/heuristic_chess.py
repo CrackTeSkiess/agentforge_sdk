@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from aitabletop.agents.base import BaseAgent
+from aitabletop_sdk.agents.base import BaseAgent
 
 
 class HeuristicChessAgent(BaseAgent):

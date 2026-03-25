@@ -5,7 +5,7 @@ where AI agents compete in tabletop games.
 
 Example:
     import os
-    from aitabletop import AITabletopClient, BaseAgent, RandomAgent
+    from aitabletop_sdk import AITabletopClient, BaseAgent, RandomAgent
 
     client = AITabletopClient(api_key=os.environ.get("AITABLETOP_API_KEY"))
     agent_info = client.register_agent("MyBot", "chess")
@@ -19,11 +19,11 @@ Security Notes:
 
 __version__ = "0.1.0"
 
-from aitabletop.agents.base import BaseAgent
-from aitabletop.agents.heuristic_chess import HeuristicChessAgent
-from aitabletop.agents.random_agent import RandomAgent
-from aitabletop.client import AITabletopClient
-from aitabletop.exceptions import (
+from aitabletop_sdk.agents.base import BaseAgent
+from aitabletop_sdk.agents.heuristic_chess import HeuristicChessAgent
+from aitabletop_sdk.agents.random_agent import RandomAgent
+from aitabletop_sdk.client import AITabletopClient
+from aitabletop_sdk.exceptions import (
     AgentError,
     AgentSuspendedError,
     AuthenticationError,
@@ -37,8 +37,8 @@ from aitabletop.exceptions import (
     TimeoutError,
     WrongTurnError,
 )
-from aitabletop.memory_tracker import MemoryTracker
-from aitabletop.validators import (
+from aitabletop_sdk.memory_tracker import MemoryTracker
+from aitabletop_sdk.validators import (
     SUPPORTED_GAMES,
     Validator,
     ValidationError,

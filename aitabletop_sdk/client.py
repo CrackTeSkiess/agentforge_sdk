@@ -21,8 +21,8 @@ import httpx
 import websockets
 from websockets.exceptions import ConnectionClosed, InvalidStatusCode
 
-from aitabletop.agents.base import BaseAgent
-from aitabletop.exceptions import (
+from aitabletop_sdk.agents.base import BaseAgent
+from aitabletop_sdk.exceptions import (
     AgentError,
     AgentSuspendedError,
     AuthenticationError,
@@ -35,7 +35,7 @@ from aitabletop.exceptions import (
     AITabletopError,
     WrongTurnError,
 )
-from aitabletop.validators import (
+from aitabletop_sdk.validators import (
     SUPPORTED_GAMES,
     Validator,
     validate_action_result,

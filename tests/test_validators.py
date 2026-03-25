@@ -1,6 +1,6 @@
-"""Tests for AITabletop validators module."""
+"""Tests for AITabletop SDK validators module."""
 import pytest
-from aitabletop.validators import (
+from aitabletop_sdk.validators import (
     validate_api_key,
     validate_game_type,
     validate_agent_name,

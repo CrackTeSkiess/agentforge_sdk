@@ -9,10 +9,10 @@ include pyproject.toml
 include setup.cfg
 
 # Include all Python source files
-recursive-include aitabletop *.py
+recursive-include aitabletop_sdk *.py
 
 # Include type hints marker
-recursive-include aitabletop *.py.typed
+recursive-include aitabletop_sdk *.py.typed
 
 # Exclude test files and development files
 global-exclude *.py[cod]

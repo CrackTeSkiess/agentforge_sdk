@@ -9,7 +9,7 @@ from __future__ import annotations
 import re
 from typing import Any, Optional, Tuple
 
-from aitabletop.exceptions import InvalidActionError, AITabletopError
+from aitabletop_sdk.exceptions import InvalidActionError, AITabletopError
 
 # Supported game types
 SUPPORTED_GAMES = frozenset({"chess", "go", "uno", "poker", "tarot", "san_juan", "qwixx"})
