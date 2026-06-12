@@ -19,7 +19,13 @@ from typing import Any, Callable, Optional
 
 import httpx
 import websockets
-from websockets.exceptions import ConnectionClosed, InvalidStatusCode
+from websockets.exceptions import ConnectionClosed
+
+try:
+    # websockets >= 13: InvalidStatus replaces the deprecated InvalidStatusCode
+    from websockets.exceptions import InvalidStatus as InvalidStatusError
+except ImportError:  # pragma: no cover - older websockets versions
+    from websockets.exceptions import InvalidStatusCode as InvalidStatusError
 
 from aitabletop_sdk.agents.base import BaseAgent
 from aitabletop_sdk.exceptions import (
@@ -629,27 +635,32 @@ class AITabletopClient:
                         except Exception as e:
                             logger.error(f"Error processing message: {e}")
 
-            except InvalidStatusCode as e:
-                # Handle WebSocket HTTP errors
-                if e.status_code == 4001:
+            except InvalidStatusError as e:
+                # Handle WebSocket HTTP errors.
+                # InvalidStatus (websockets >= 13) exposes e.response.status_code,
+                # while the deprecated InvalidStatusCode exposed e.status_code.
+                status_code = getattr(e, "status_code", None)
+                if status_code is None:
+                    status_code = e.response.status_code
+                if status_code == 4001:
                     raise AuthenticationError("X-API-Key header required") from e
-                elif e.status_code == 4002:
+                elif status_code == 4002:
                     raise AuthenticationError("Invalid API key") from e
-                elif e.status_code == 4004:
+                elif status_code == 4004:
                     raise MatchNotFoundError(
                         "Match not found or you are not a participant"
                     ) from e
-                elif e.status_code == 4005:
+                elif status_code == 4005:
                     raise AITabletopConnectionError(
                         "Duplicate connection - agent already connected elsewhere"
                     ) from e
-                elif e.status_code == 4006:
+                elif status_code == 4006:
                     # Memory limit exceeded error code
                     raise MemoryLimitExceeded(
                         "Agent exceeded memory limit during gameplay"
                     ) from e
                 else:
-                    logger.error(f"WebSocket HTTP error {e.status_code}")
+                    logger.error(f"WebSocket HTTP error {status_code}")
 
             except ConnectionClosed as e:
                 logger.warning(f"WebSocket closed: {e}")

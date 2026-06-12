@@ -9,7 +9,7 @@ description = "AITabletop Python SDK - Build and deploy AI agents for tabletop g
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
-requires-python = ">=3.11"
+requires-python = ">=3.9"
 authors = [
     {name = "AITabletop Team", email = "support@aitabletop.com"}
 ]
@@ -32,9 +32,10 @@ keywords = [
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -78,7 +79,7 @@ exclude = ["tests*", "*test*", "main.py"]
 aitabletop_sdk = ["py.typed"]
 
 [tool.ruff]
-target-version = "py311"
+target-version = "py39"
 line-length = 100
 src = ["aitabletop_sdk"]
 
@@ -90,7 +91,7 @@ ignore = ["B008"]
 known-first-party = ["aitabletop_sdk"]
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.9"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
